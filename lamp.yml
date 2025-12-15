@@ -1,0 +1,51 @@
+#lamp -> amazon linux
+#htttpd, mariadb105-server,mariadb, php, php-fpm
+---
+  - name: install lamp in amazon linux
+    hosts: localhost
+    become: yes
+    tasks:
+      - name: install httpd packagec
+        ansible.builtin.dnf:
+          name: httpd
+          state: absent
+      # install mariadb
+      - name: install mariadb package
+        ansible.builtin.dnf:
+          name: mariadb105-server
+          state: absent
+      # install php
+      - name: install php package
+        ansible.builtin.dnf:
+          name: 
+           - php
+           - php-fpm
+          state: absent
+      # start and enable httpd service
+      - name: start httpd service
+        ansible.builtin.systemd_service:
+          name: httpd
+          state: stopped
+          enabled: false
+      # start and enable mariadb service
+      - name: start mariadb service
+        ansible.builtin.systemd_service:
+          name: mariadb
+          state: stopped
+          enabled: false
+      # start php-fpm service
+      - name: start php-fpm service
+        ansible.builtin.systemd_service:
+          name: php-fpm
+          state: stopped
+          enabled:  false
+     # deploy index.php file
+      - name: deploy index.php file
+        ansible.builtin.copy:
+         src: /home/ec2-user/index.php
+         dest: /var/www/html/index.php
+         owner: apache
+         group: apache
+         mode: '0644'
+
+      
